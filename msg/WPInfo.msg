@@ -1,0 +1,4 @@
+uint8 total_wps
+uint8 next_wp
+float32 distance_to_next_wp
+float32 target_bearing
