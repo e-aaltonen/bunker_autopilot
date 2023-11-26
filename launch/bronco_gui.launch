@@ -1,0 +1,16 @@
+<launch>
+
+    <node pkg="mavros" type="mavros_node" name="mavros" output="screen">
+        <param name="fcu_url" value="/dev/ttyACM0:57600" />
+    </node>
+
+    <node pkg="bunker_autopilot" type="rcin_messenger.py" name="rcin_switch_messenger"/>
+    <node pkg="bunker_autopilot" type="rcin_switch_messenger.py" name="rcin_messenger"/>
+
+    <node pkg="bunker_autopilot" type="mission_server.py" name="mission_server" output="screen"/>
+    <!--node pkg="bunker_autopilot" type="mission_client.py" name="mission_client" output="screen"/-->
+    <node pkg="bunker_autopilot" type="autogui.py" name="autogui" output="screen"/>
+
+</launch>
+
+

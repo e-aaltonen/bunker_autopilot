@@ -55,15 +55,14 @@ find_package(catkin REQUIRED COMPONENTS
    FILES
    WPInfo.msg
    Angles.msg
-#   Message2.msg
+   RCchannels.msg
  )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+ add_service_files(
+   FILES
+   MissionManip.srv
+ )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -117,9 +116,12 @@ catkin_package(
 
 catkin_install_python(PROGRAMS 
   src/rc_arm-disarm.py
+  src/rcin_messenger.py
   src/rcout_to_cmd_vel.py
-  src/rc_state_sub-pub.py
-  src/wp_amend_clear.py
+  src/rc_state_messenger.py
+  src/mission_client.py
+  src/mission_server.py
+  src/autogui.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

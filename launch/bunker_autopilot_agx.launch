@@ -5,19 +5,19 @@
 		<param name="fcu_url" value="/dev/ttyUSB0:57600" />
 	</node>
 
-    <param name="autopilot/bunker_run" value="True" /> <-- Remove this -->
     <param name="autopilot/speed_factor_lin_x" value="1.0"/>
     <param name="autopilot/speed_factor_ang_y" value="1.0"/>
 
-    <-- Approximates for converting local coordinate value differences to metres: k_lat for latitude, k_long for longitude -->
     <param name="autopilot/k_lat" value="111194"/>
     <param name="autopilot/k_long" value="50519"/>
 
     <node pkg="bunker_autopilot" type="rcout_to_cmd_vel.py" name="rcout_to_cmd_vel"/>
-    <node pkg="bunker_autopilot" type="rc_state_sub-pub.py" name="rc_state_sub_pub"/>
+    <node pkg="bunker_autopilot" type="rc_state_messenger.py" name="rc_state_messenger"/>
     <node pkg="bunker_autopilot" type="rc_arm-disarm.py" name="rc_arm_disarm"/>
 
-    <node pkg="bunker_autopilot" type="wp_amend_clear.py" name="wp_amend_clear" output="screen"/>
+    <node pkg="bunker_autopilot" type="mission_server.py" name="mission_server" output="screen"/>
+    <node pkg="bunker_autopilot" type="mission_client.py" name="mission_client" output="screen"/>
+
 
 </launch>
 

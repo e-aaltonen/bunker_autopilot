@@ -1,7 +1,0 @@
-<launch>
-    <node pkg="bunker_autopilot" type="rcout_to_cmd_vel" name="rcout_to_cmd_vel"/>
-    <node pkg="bunker_autopilot" type="rc_state_sub_pub" name="rc_state_sub_pub"/>
-    <node pkg="bunker_autopilot" type="rc_arm_disarm" name="rc_arm_disarm"/>
-
-    <!--node pkg="bunker_autopilot" type="wp_amend_clear" name="wp_amend_clear"/-->
-</launch>

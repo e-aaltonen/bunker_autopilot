@@ -1,0 +1,22 @@
+int8 SET_HOME = 0
+int8 ADD_WP = 1
+int8 REMOVE_WP = 2
+int8 CLEAR_MISSION = 3
+int8 BACKWARDS_MISSION = 4
+int8 OFFSET_MISSION = 5
+int8 SCALE_ROTATE_MISSION = 6
+int8 MIRROR_MISSION = 7
+
+# Field used for task       0   1   2   3   4   5   6   7
+int8 task               #   X   X   X   X   X   X   X   X
+bool use_last           #       X   X                       whether to add/remove last waypoint
+bool use_current        #       X   X
+int8 seq                #       X   X           X           if use_last = False, then manipulate WP at [seq]
+bool all_wps            #                       X
+float32 distance        #                       X
+float32 direction_angle #                       X   X   X
+float32 scale_factor    #                           X
+
+---
+bool success
+int8 number_wps
