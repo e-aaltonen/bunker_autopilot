@@ -2,7 +2,7 @@
 
 """
 rcout_to_cmd_vel.py
-Esa Aaltonen 2023
+E. Aaltonen 2024
 
 Convert skid steering servo signal to Twist messages
 
@@ -14,10 +14,9 @@ Channel[2]: throttle right (SERVO3_FUNCTION = 74)
 Requirements:
 - CAN up (sudo ip link set can0 up type can bitrate 500000)
 - bunker_bringup running (bunker_minimal.launch)
-- MavROS node running (/mavros/mavros_node)
+- MAVROS node running (/mavros/mavros_node)
 
 Default parameter values set in /autopilot_test/launch/autopilot_test_agx.launch:
-- autopilot/bunker_run: "True"          Emergency stop if "False"
 - autopilot/speed_factor_lin_x: "1.0"   Forward movement rate under FCU control
 - autopilot/speed_factor_ang_y: "1.0"   Turning rate under FCU control
 """
@@ -63,17 +62,6 @@ class RCOutInput():
     def run(self):
         rate = rospy.Rate(50)
         while not rospy.is_shutdown():
-            #rospy.loginfo("> Publishing x: %0.2f"%self.twist_msg.linear.x)
-            #rospy.loginfo("> Publishing z: %0.2f"%self.twist_msg.angular.z)
-
-            # no need to check RC calibration params from MavROS - these min/max values are only
-            # used for calculating Twist messages based on RC Out. If trim adjustment is needed,
-            # this is easily done through FC settings.
-            if rospy.has_param('autopilot/pwm_min'):
-                self._pwm_min = bool(rospy.get_param('autopilot/pwm_min'))
-            if rospy.has_param('autopilot/pwm_max'):
-                self._pwm_max = bool(rospy.get_param('autopilot/pwm_max'))
-
             self.pub_twist.publish(self.twist_msg)
             rate.sleep()
     

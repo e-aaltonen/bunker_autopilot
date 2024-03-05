@@ -1,19 +1,19 @@
 #!/usr/bin/python
 """
-rc_arm-disarm.py
-Esa Aaltonen 2023
+rc_arm_disarm.py
+E. Aaltonen 2024
 
 Read remote control switches C & D to control FCU flight mode (C) and arming/disarming (D)
 
-This node reads RC switch states from /switch/c and /switch/d and calls flight mode service
+This node reads RC switch states from autopilot/switch/c and autopilot/switch/d and calls flight mode service
 /mavros/set_mode to set MANUAL mode (switch C up) or AUTO mode (switch D middle) 
 and arming command service /mavros/cmd/arming to arm (switch D down) or disarm (switch D up) the FCU.
 
 Requirements:
 - CAN up (sudo ip link set can0 up type can bitrate 500000)
 - bunker_bringup running (bunker_minimal.launch) (modified code)
-- MavROS node running (/mavros/mavros_node)
-- rc_state_sub-pub.py running (publisher for /switch/c and /switch/d)
+- MAVROS node running (/mavros/mavros_node)
+- rc_state_messenger node running (publisher for autopilot/switch/c and autopilot/switch/d)
 
 """
 
@@ -23,21 +23,22 @@ from mavros_msgs.srv import CommandBool, SetMode
 import time
 
 # int literals - switch positions
-SW_UP = 2
+SW_UP = 0
 SW_MIDDLE = 1
-SW_DOWN = 3
+SW_DOWN = 2
 
 
 class RCArming():
     def __init__(self):
         rospy.init_node("rc_arm_disarm")
-        self.sub_swc = rospy.Subscriber("switch/c", UInt8, self.callback_update_swc)
-        self.sub_swd = rospy.Subscriber("switch/d", UInt8, self.callback_update_swd)
+        self.sub_swc = rospy.Subscriber("autopilot/switch/c", UInt8, self.callback_update_swc)
+        self.sub_swd = rospy.Subscriber("autopilot/switch/d", UInt8, self.callback_update_swd)
 
         rospy.loginfo("> Subscriber created: arm/disarm")
 
         self.swc = 0
         self.swd = 0
+        self.opt_mode = ""
 
     # Read Switch C value
     def callback_update_swc(self, msg):
@@ -58,6 +59,17 @@ class RCArming():
                 try:
                     flightModeService = rospy.ServiceProxy('/mavros/set_mode', SetMode)
                     isModeChanged = flightModeService(custom_mode='AUTO') #return true or false
+                except rospy.ServiceException as e:
+                    rospy.loginfo("Set mode service call failed: %s"%e)
+                    
+            if msg.data == SW_DOWN and rospy.has_param('autopilot/opt_mode'): # 3 = switch down - call aux mode if set in param '/autopiolot/opt_mode'
+                self.opt_mode = rospy.get_param('autopilot/opt_mode')
+                rospy.wait_for_service('mavros/set_mode')
+                try:
+                    flightModeService = rospy.ServiceProxy('/mavros/set_mode', SetMode)
+                    isModeChanged = flightModeService(custom_mode=self.opt_mode) #return true or false
+                    if not isModeChanged: # if an invalid mode name is given in the param
+                        rospy.loginfo("Invalid aux mode name: {0}".format(self.apt_mode))
                 except rospy.ServiceException as e:
                     rospy.loginfo("Set mode service call failed: %s"%e)
                 

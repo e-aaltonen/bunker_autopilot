@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# E. Aaltonen 5 Mar 2024
+
 import rospy
 import time
 import tkinter as tk
@@ -28,9 +30,9 @@ SCALE_MISSION = 6
 ROTATE_MISSION = 7
 
 # int literals - switch positions
-SW_UP = 2
+SW_UP = 0
 SW_MIDDLE = 1
-SW_DOWN = 3
+SW_DOWN = 2
 
 class LFrame(tk.LabelFrame):
     def __init__(self, *args, **kwargs):
@@ -808,7 +810,7 @@ class Ohjelma():
 
 if __name__ == "__main__":
     root = tk.Tk()
-    rospy.init_node("gui_subscriber")
+    rospy.init_node("autopilot_gui")
     pyautogui.PAUSE = 0
     k = Ohjelma()
     k.run()

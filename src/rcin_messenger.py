@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# E. Aaltonen 2024
+
 import rospy
 from std_msgs.msg import UInt16, UInt8, Int8
 from mavros_msgs.msg import RCIn, ParamValue
@@ -9,9 +11,9 @@ import time
 import math
 
 # int literals - switch positions
-SW_UP = 2
+SW_UP = 0
 SW_MIDDLE = 1
-SW_DOWN = 3
+SW_DOWN = 2
 
 class RCChannel:
     def __init__(self, chnl):
@@ -53,14 +55,15 @@ class RCInMessenger():
                         
         self.pub_channels = rospy.Publisher("autopilot/RCchannels", RCchannels, queue_size=1)
 
-        self.pub_swa = rospy.Publisher("switch/a", UInt8, queue_size=1)
-        self.pub_swb = rospy.Publisher("switch/b", UInt8, queue_size=1)
-        self.pub_swc = rospy.Publisher("switch/c", UInt8, queue_size=1)
-        self.pub_swd = rospy.Publisher("switch/d", UInt8, queue_size=1)
-        self.pub_var_a = rospy.Publisher("switch/var_a", Int8, queue_size=1)
+        self.pub_swa = rospy.Publisher("autopilot/switch/a", UInt8, queue_size=1)
+        self.pub_swb = rospy.Publisher("autopilot/switch/b", UInt8, queue_size=1)
+        self.pub_swc = rospy.Publisher("autopilot/switch/c", UInt8, queue_size=1)
+        self.pub_swd = rospy.Publisher("autopilot/switch/d", UInt8, queue_size=1)
+        self.pub_var_a = rospy.Publisher("autopilot/switch/var_a", Int8, queue_size=1)
+        self.pub_button = rospy.Publisher("autopilot/switch/button", UInt8, queue_size=1)
 
-        self.channelsNew = [0, 0, 0, 0, 0]  # PWM values 1000-2000
-        self.channelsPrev = [0, 0, 0, 0, 0] # PWM values 1000-2000
+        self.channelsNew = [0, 0, 0, 0, 0, 0]  # PWM values 1000-2000
+        self.channelsPrev = [0, 0, 0, 0, 0, 0] # PWM values 1000-2000
 
         self.sub_rc = rospy.Subscriber("mavros/rc/in", RCIn, self.cb_rcin)
 
@@ -86,14 +89,15 @@ class RCInMessenger():
             self.channel_msg.var_a = self.scale_pwm(msg.channels[8], self.var_a)
             self.channel_msg.button = self.scale_pwm(msg.channels[9], self.button)
 
-            self.channelsNew[0] = self.mapSwitch(msg.channels[4])
-            self.channelsNew[1] = self.mapSwitch(msg.channels[5])
-            self.channelsNew[2] = self.mapSwitch(msg.channels[7])
-            self.channelsNew[3] = self.mapSwitch(msg.channels[6])
-            self.channelsNew[4] = self.mapVar(msg.channels[8])
+            self.channelsNew[0] = self.mapSwitch(msg.channels[4])   # SWA
+            self.channelsNew[1] = self.mapSwitch(msg.channels[5])   # SWB
+            self.channelsNew[2] = self.mapSwitch(msg.channels[7])   # SWC
+            self.channelsNew[3] = self.mapSwitch(msg.channels[6])   # SWD
+            self.channelsNew[4] = self.mapVar(msg.channels[8])  # var_a
+            self.channelsNew[5] = self.mapSwitch(msg.channels[9])  # button
         
     
-        #Check if any of the switches have changed and publish in topics /switch/a, b, c, d, var_a
+        #Check if any of the switches have changed and publish in topics /switch/a, b, c, d, var_a, button
         if self.channelsNew != self.channelsPrev:
             if self.channelsNew[0] != self.channelsPrev[0]:
                 self.pub_swa.publish(self.channelsNew[0])
@@ -106,7 +110,9 @@ class RCInMessenger():
                 self.pub_swd.publish(self.channelsNew[3])
             if self.channelsNew[4] != self.channelsPrev[4]:
                 self.pub_var_a.publish(self.channelsNew[4])
-            for x in range(5):
+            if self.channelsNew[5] != self.channelsPrev[5]:
+                self.pub_button.publish(self.channelsNew[4])
+            for x in range(6):
                 self.channelsPrev[x] = self.channelsNew[x]
 
     # If switch (B) is down, disable throttle & steering servo output to enable GUI; else enable servos

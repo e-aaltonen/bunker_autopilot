@@ -1,12 +1,12 @@
 #!/usr/bin/python
 """
 mission_client.py
-Esa Aaltonen 2023
+E. Aaltonen 5 Mar. 2024
 
 Read remote control switch A and left knob VRA to insert/remove waypoints
 
-This node subscribes to /switch/a and /switch/var_a published by rc_state_sub-pub.py
-(uint8 for /switch/a, int8 for /switch/var_a) and calls service /bunker_autopilot/mission_manip
+This node subscribes to autopilot/switch/a and autopilot/switch/var_a published by rc_state_sub-pub.py
+(uint8 for autopilot/switch/a, int8 for autopilot/switch/var_a) and calls service /bunker_autopilot/mission_manip
 to manipulate the waypoint list.
 
 ***
@@ -17,12 +17,12 @@ Functions triggered by switch A down (at state change):
 ***
 
 Requirements:
-- ugv_sdk (Weston Robot, v1.x) and bunker_base (Agilex Robotics) packages 
-    (modified versions; see https://github.com/e-aaltonen/bunker_ros_RC and https://github.com/e-aaltonen/ugv_sdk_RC/tree/v1.x)
+- ugv_sdk and bunker_base (Agilex Robotics) packages 
+    (modified versions; see https://github.com/e-aaltonen/bunker_ros_RC)
 - CAN up (sudo ip link set can0 up type can bitrate 500000)
 - bunker_bringup running (bunker_minimal.launch)
-- rc_state_sub-pub.py running
-- MavROS node (mavros_node) running
+- rc_state_messenger node running
+- MAVROS node (mavros_node) running
 
 """
 
@@ -32,9 +32,9 @@ from bunker_autopilot.srv import MissionManip
 import time
 
 # int literals - switch positions
-SW_UP = 2
+SW_UP = 0
 SW_MIDDLE = 1
-SW_DOWN = 3
+SW_DOWN = 2
 
 # MissionManip.srv literals for task field (int8)
 SET_HOME = 0
@@ -48,12 +48,12 @@ ROTATE_MISSION = 7
 
 class WPmanip():
     def __init__(self):
-        rospy.init_node("wp_manip")
-        self.sub_swa = rospy.Subscriber("switch/a", UInt8, self.callback_update_swa)
-        self.sub_swb = rospy.Subscriber("switch/b", UInt8, self.callback_update_swb)
-        self.sub_var_a = rospy.Subscriber("switch/var_a", Int8, self.callback_update_var_a)
+        rospy.init_node("mission_client")
+        self.sub_swa = rospy.Subscriber("autopilot/switch/a", UInt8, self.callback_update_swa)
+        self.sub_swb = rospy.Subscriber("autopilot/switch/b", UInt8, self.callback_update_swb)
+        self.sub_var_a = rospy.Subscriber("autopilot/switch/var_a", Int8, self.callback_update_var_a)
 
-        rospy.loginfo("> wp_manip node initiated")
+        rospy.loginfo("> mission_client node initiated")
 
         self.swa = 0
         self.swb = 0

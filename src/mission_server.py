@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 mission_server.py
-Esa Aaltonen 2023
+E. Aaltonen 5 Mar. 2024
 
 This service subscribes to /mavros/mission/waypoints to receive waypoint list from the FCU and to
 /mavros/global_position/global to receive current GPS position.

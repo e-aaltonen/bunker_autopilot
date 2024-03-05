@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """
 rc_state_messenger.py
-Esa Aaltonen 2023
+E. Aaltonen 2024
 
 Read remote control data feed and publish messages at switch state change
 Also publish stick values [-100,100] and switch values [0,100] in topic /autopilot/RCchannels (for GUI)
@@ -32,10 +32,11 @@ from std_msgs.msg import UInt8, Int8
 from bunker_msgs.msg import BunkerRCState
 from bunker_autopilot.msg import RCchannels
 
-# int literals - switch positions
-SW_UP = 2
+
+# int literals for switch positions
+SW_UP = 0
 SW_MIDDLE = 1
-SW_DOWN = 3
+SW_DOWN = 2
 
 class SWMessenger():
     def __init__(self):
@@ -44,60 +45,56 @@ class SWMessenger():
 
         rospy.loginfo("> Subscriber created: RC switches messenger")
 
-        self.pub_swa = rospy.Publisher("switch/a", UInt8, queue_size=1)
-        self.pub_swb = rospy.Publisher("switch/b", UInt8, queue_size=1)
-        self.pub_swc = rospy.Publisher("switch/c", UInt8, queue_size=1)
-        self.pub_swd = rospy.Publisher("switch/d", UInt8, queue_size=1)
-        self.pub_var_a = rospy.Publisher("switch/var_a", Int8, queue_size=1)
+        self.pub_swa = rospy.Publisher("autopilot/switch/a", UInt8, queue_size=1)
+        self.pub_swb = rospy.Publisher("autopilot/switch/b", UInt8, queue_size=1)
+        self.pub_swc = rospy.Publisher("autopilot/switch/c", UInt8, queue_size=1)
+        self.pub_swd = rospy.Publisher("autopilot/switch/d", UInt8, queue_size=1)
+        self.pub_var_a = rospy.Publisher("autopilot/switch/var_a", Int8, queue_size=1)
         self.pub_channels = rospy.Publisher("autopilot/RCchannels", RCchannels, queue_size=1)
         self.channel_msg = RCchannels()
         self.channel_msg.button = 0
 
-        self.last_sws = 0
-        self.sws_last = [0, 0, 0, 0]
+        self.last_swa = 0
+        self.last_swb = 0
+        self.last_swc = 0
+        self.last_swd = 0
         self.last_var_a = 0
-        self.sw_array = [0, 0, 0, 0]        
         
     def callback_rc_status(self, msg):
-        self.channel_msg.right_x = msg.right_stick_left_right
-        self.channel_msg.right_y = msg.right_stick_up_down
-        self.channel_msg.left_x = msg.left_stick_left_right
-        self.channel_msg.left_y = msg.left_stick_up_down
-        self.channel_msg.swa = self.scale_pwm(msg.channels[4], self.swa)
-        self.channel_msg.swb = self.scale_pwm(msg.channels[5], self.swb)
-        self.channel_msg.var_a = self.scale_pwm(msg.channels[8], self.var_a)
-        self.channel_msg.button = self.scale_pwm(msg.channels[9], self.button)
+        self.channel_msg.right_x = msg.stick_right_h
+        self.channel_msg.right_y = msg.stick_right_v
+        self.channel_msg.left_x = msg.stick_left_h
+        self.channel_msg.left_y = msg.stick_left_v
 
-        #Check if any of the switches have changed and publish in topics /switch/a, b, c or d
-        if msg.sws != self.last_sws:
-            
-            for j in range(4):
-                k = 3 - j
-                mask = (3 << (k*2))
-                sw_value = (msg.sws & mask) >> (k*2)
-                self.sw_array[k] = sw_value
+        # Check if any of the switches have changed and publish in topics autopilot/switch/a, b, c or d
+        # Only publish if switch value is 0, 1 or 2 (= eliminate rubbish values during 2-pos. switch transition)
+        if msg.swa != self.last_swa and msg.swa in range(3):
+            self.pub_swa.publish(msg.swa)
+            self.last_swa = msg.swa
 
-            self.channel_msg.swa = self.sw_to_chan(self.sw_array[0])
-            self.channel_msg.swb = self.sw_to_chan(self.sw_array[1])
-            self.channel_msg.swc = self.sw_to_chan(self.sw_array[2])
-            self.channel_msg.swd = self.sw_to_chan(self.sw_array[3])
-	    
-            if(self.sw_array[0] != self.sws_last[0]):
-                self.pub_swa.publish(self.sw_array[0])
-            if(self.sw_array[1] != self.sws_last[1]):
-                self.pub_swb.publish(self.sw_array[1])
-            if(self.sw_array[2] != self.sws_last[2]):
-                self.pub_swc.publish(self.sw_array[2])
-            if(self.sw_array[3] != self.sws_last[3]):
-                self.pub_swd.publish(self.sw_array[3])  
+        if msg.swb != self.last_swb and msg.swb in range(3):
+            self.pub_swb.publish(msg.swb)
+            self.last_swb = msg.swb
 
-            self.last_sws = msg.sws
-                        
-        # Check if Left knob has changed and publish in topic /switch/var_a
+        if msg.swc != self.last_swc and msg.swc in range(3):
+            self.pub_swc.publish(msg.swc)
+            self.last_swc = msg.swc
+
+        if msg.swd != self.last_swd and msg.swd in range(3):
+            self.pub_swd.publish(msg.swd)
+            self.last_swd = msg.swd
+
+        # Check if Left knob has changed and publish in topic autopilot/switch/var_a
         if msg.var_a != self.last_var_a:
             self.pub_var_a.publish(self.last_var_a)  
             self.last_var_a = msg.var_a
-    
+        
+        self.channel_msg.swa = self.sw_to_chan(msg.swa)
+        self.channel_msg.swb = self.sw_to_chan(msg.swb)
+        self.channel_msg.swc = self.sw_to_chan(msg.swc)
+        self.channel_msg.swd = self.sw_to_chan(msg.swd)
+                        
+            
     def sw_to_chan(self, pos):
         chan = 0
         if pos == 1: chan = 50
