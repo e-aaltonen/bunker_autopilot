@@ -19,3 +19,4 @@ Tasks 1, 2 and 3 can be used with RC switches (activation by flipping SWA down a
 
 Developed with FlySky i6S (10 channels), using switches SWA (2-pos.), SWB (3-pos.), SWC (3-pos.) and SWD (2-pos.) plus potentiometer VAR_A. The GUI module also supports the rear button (KEY1) and both sticks, totalling 10 channels.
 
+Mar 2024: Change switch position literals in accordance to new RCState messages (bunker_ros_RC & scout_ros_RC).
