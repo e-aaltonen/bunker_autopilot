@@ -53,14 +53,14 @@ class RCInMessenger():
         self.var_a = RCChannel("RC9")
         self.button = RCChannel("RC10")
                         
-        self.pub_channels = rospy.Publisher("autopilot/RCchannels", RCchannels, queue_size=1)
+        self.pub_channels = rospy.Publisher("autopilot/channels", RCchannels, queue_size=1)
 
-        self.pub_swa = rospy.Publisher("autopilot/switch/a", UInt8, queue_size=1)
-        self.pub_swb = rospy.Publisher("autopilot/switch/b", UInt8, queue_size=1)
-        self.pub_swc = rospy.Publisher("autopilot/switch/c", UInt8, queue_size=1)
-        self.pub_swd = rospy.Publisher("autopilot/switch/d", UInt8, queue_size=1)
-        self.pub_var_a = rospy.Publisher("autopilot/switch/var_a", Int8, queue_size=1)
-        self.pub_button = rospy.Publisher("autopilot/switch/button", UInt8, queue_size=1)
+        self.pub_swa = rospy.Publisher("autopilot/swa", UInt8, queue_size=1)
+        self.pub_swb = rospy.Publisher("autopilot/swb", UInt8, queue_size=1)
+        self.pub_swc = rospy.Publisher("autopilot/swc", UInt8, queue_size=1)
+        self.pub_swd = rospy.Publisher("autopilot/swd", UInt8, queue_size=1)
+        self.pub_var_a = rospy.Publisher("autopilot/var_a", Int8, queue_size=1)
+        self.pub_button = rospy.Publisher("autopilot/button", UInt8, queue_size=1)
 
         self.channelsNew = [0, 0, 0, 0, 0, 0]  # PWM values 1000-2000
         self.channelsPrev = [0, 0, 0, 0, 0, 0] # PWM values 1000-2000

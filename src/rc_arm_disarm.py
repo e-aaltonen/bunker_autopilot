@@ -5,7 +5,7 @@ E. Aaltonen 2024
 
 Read remote control switches C & D to control FCU flight mode (C) and arming/disarming (D)
 
-This node reads RC switch states from autopilot/switch/c and autopilot/switch/d and calls flight mode service
+This node reads RC switch states from autopilot/swc and autopilot/swd and calls flight mode service
 /mavros/set_mode to set MANUAL mode (switch C up) or AUTO mode (switch D middle) 
 and arming command service /mavros/cmd/arming to arm (switch D down) or disarm (switch D up) the FCU.
 
@@ -13,7 +13,7 @@ Requirements:
 - CAN up (sudo ip link set can0 up type can bitrate 500000)
 - bunker_bringup running (bunker_minimal.launch) (modified code)
 - MAVROS node running (/mavros/mavros_node)
-- rc_state_messenger node running (publisher for autopilot/switch/c and autopilot/switch/d)
+- rc_state_messenger node running (publisher for autopilot/swc and autopilot/swd)
 
 """
 
@@ -31,8 +31,8 @@ SW_DOWN = 2
 class RCArming():
     def __init__(self):
         rospy.init_node("rc_arm_disarm")
-        self.sub_swc = rospy.Subscriber("autopilot/switch/c", UInt8, self.callback_update_swc)
-        self.sub_swd = rospy.Subscriber("autopilot/switch/d", UInt8, self.callback_update_swd)
+        self.sub_swc = rospy.Subscriber("autopilot/swc", UInt8, self.callback_update_swc)
+        self.sub_swd = rospy.Subscriber("autopilot/swd", UInt8, self.callback_update_swd)
 
         rospy.loginfo("> Subscriber created: arm/disarm")
 

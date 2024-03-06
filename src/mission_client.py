@@ -5,8 +5,8 @@ E. Aaltonen 5 Mar. 2024
 
 Read remote control switch A and left knob VRA to insert/remove waypoints
 
-This node subscribes to autopilot/switch/a and autopilot/switch/var_a published by rc_state_sub-pub.py
-(uint8 for autopilot/switch/a, int8 for autopilot/switch/var_a) and calls service /bunker_autopilot/mission_manip
+This node subscribes to autopilot/swa and autopilot/var_a published by rc_state_sub-pub.py
+(uint8 for autopilot/swa, int8 for autopilot/var_a) and calls service /bunker_autopilot/mission_manip
 to manipulate the waypoint list.
 
 ***
@@ -49,9 +49,9 @@ ROTATE_MISSION = 7
 class WPmanip():
     def __init__(self):
         rospy.init_node("mission_client")
-        self.sub_swa = rospy.Subscriber("autopilot/switch/a", UInt8, self.callback_update_swa)
-        self.sub_swb = rospy.Subscriber("autopilot/switch/b", UInt8, self.callback_update_swb)
-        self.sub_var_a = rospy.Subscriber("autopilot/switch/var_a", Int8, self.callback_update_var_a)
+        self.sub_swa = rospy.Subscriber("autopilot/swa", UInt8, self.callback_update_swa)
+        self.sub_swb = rospy.Subscriber("autopilot/swb", UInt8, self.callback_update_swb)
+        self.sub_var_a = rospy.Subscriber("autopilot/var_a", Int8, self.callback_update_var_a)
 
         rospy.loginfo("> mission_client node initiated")
 

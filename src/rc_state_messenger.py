@@ -18,8 +18,8 @@ bit[6-7]: SWD 2 = up, 3 = down
 int8 var_a "left knob": CAN frame 0x241, byte[5]:
 range [-100,100]: -100 = left/down limit, 0 = middle, 100 = right/up limit
 
-When a value changes, the node publishes the corresponding new state once in topic /switch/a, /b, /c or /d
-in UInt8 format, 0 = up, 1 = middle, 2 = down, and in topic /switch/var_a, Int8 -100 ... 100
+When a value changes, the node publishes the corresponding new state once in topic /autopilot/swa, swb, swc or swd
+in UInt8 format, 0 = up, 1 = middle, 2 = down, and in topic /autopilot/var_a, Int8 -100 ... 100
 
 Requirements:
 - CAN up (sudo ip link set can0 up type can bitrate 500000)
@@ -42,12 +42,12 @@ class SWMessenger():
     def __init__(self):
         rospy.init_node("rc_state_sub_pub")
         
-        self.pub_swa = rospy.Publisher("autopilot/switch/a", UInt8, queue_size=1)
-        self.pub_swb = rospy.Publisher("autopilot/switch/b", UInt8, queue_size=1)
-        self.pub_swc = rospy.Publisher("autopilot/switch/c", UInt8, queue_size=1)
-        self.pub_swd = rospy.Publisher("autopilot/switch/d", UInt8, queue_size=1)
-        self.pub_var_a = rospy.Publisher("autopilot/switch/var_a", Int8, queue_size=1)
-        self.pub_channels = rospy.Publisher("autopilot/RCchannels", RCchannels, queue_size=1)
+        self.pub_swa = rospy.Publisher("autopilot/swa", UInt8, queue_size=1)
+        self.pub_swb = rospy.Publisher("autopilot/swb", UInt8, queue_size=1)
+        self.pub_swc = rospy.Publisher("autopilot/swc", UInt8, queue_size=1)
+        self.pub_swd = rospy.Publisher("autopilot/swd", UInt8, queue_size=1)
+        self.pub_var_a = rospy.Publisher("autopilot/var_a", Int8, queue_size=1)
+        self.pub_channels = rospy.Publisher("autopilot/channels", RCchannels, queue_size=1)
         self.channel_msg = RCchannels()
         self.channel_msg.button = 0
 

@@ -363,16 +363,16 @@ class Ohjelma():
 
         self.wps = WaypointList()
         
-        rospy.Subscriber("/mavros/state", State, self.cb_state)
-        rospy.Subscriber("/mavros/imu/data", Imu, self.cb_imu)
-        rospy.Subscriber("/mavros/mission/waypoints", WaypointList, self.cb_mission_wps)
-        rospy.Subscriber("/autopilot/RCchannels", RCchannels, self.cb_cursor)
-        rospy.Subscriber("/wp_info", WPInfo, self.cb_wpinfo)
-        rospy.Subscriber("/mavros/global_position/compass_hdg", Float64, self.cb_compass_hdg)
-        rospy.Subscriber("/mavros/local_position/velocity_body", TwistStamped, self.cb_velocity)
+        rospy.Subscriber("mavros/state", State, self.cb_state)
+        rospy.Subscriber("mavros/imu/data", Imu, self.cb_imu)
+        rospy.Subscriber("mavros/mission/waypoints", WaypointList, self.cb_mission_wps)
+        rospy.Subscriber("autopilot/channels", RCchannels, self.cb_cursor)
+        rospy.Subscriber("autopilot/wp_info", WPInfo, self.cb_wpinfo)
+        rospy.Subscriber("mavros/global_position/compass_hdg", Float64, self.cb_compass_hdg)
+        rospy.Subscriber("mavros/local_position/velocity_body", TwistStamped, self.cb_velocity)
 
-        self.sub_swa = rospy.Subscriber("switch/a", UInt8, self.cb_swa)
-        self.sub_swb = rospy.Subscriber("switch/b", UInt8, self.cb_swb)
+        self.sub_swa = rospy.Subscriber("autopilot/swa", UInt8, self.cb_swa)
+        self.sub_swb = rospy.Subscriber("autopilot/swb", UInt8, self.cb_swb)
         self.sub_global_pos = rospy.Subscriber("mavros/global_position/global", NavSatFix, self.cb_global_position)      
 
     # ***   ***     ***

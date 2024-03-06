@@ -3,7 +3,7 @@
 servo_manager.py
 E. Aaltonen 2024
 
-Subscribe to autopilot/switch/var_a and autopilot/switch/button and manage the state of 3 servos accordingly.
+Subscribe to autopilot/var_a and autopilot/button and manage the state of 3 servos accordingly.
 Servo PWM signals are set in parameters SERVOn_TRIM (to be used by MAVROS & ArduRover as output for Pixhawk RCOUT ports)
 
 """
@@ -27,8 +27,8 @@ SPEED_PARAM = "SERVO8_TRIM"
 class ServoMngr():
     def __init__(self):
         rospy.init_node("servo_manager")
-        rospy.Subscriber("autopilot/switch/var_a", Int8, self.cb_var_a)
-        rospy.Subscriber("autopilot/switch/button", UInt8, self.cb_button)
+        rospy.Subscriber("autopilot/var_a", Int8, self.cb_var_a)
+        rospy.Subscriber("autopilot/button", UInt8, self.cb_button)
 
         rospy.loginfo("> Initiating servo_manager")
 
