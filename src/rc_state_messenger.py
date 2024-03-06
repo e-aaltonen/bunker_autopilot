@@ -44,7 +44,7 @@ class SWMessenger():
         
         # Default topic when using Bunker
         self._rc_topic = "bunker_rc_status"
-        if rospy_has_param('autopilot/rc_topic'):
+        if rospy.has_param('autopilot/rc_topic'):
             self._rc_topic = rospy.get_param('autopilot/rc_topic')
                     
         self.sub = rospy.Subscriber(self._rc_topic, BunkerRCState, self.callback_rc_status)

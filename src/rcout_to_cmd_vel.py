@@ -44,11 +44,11 @@ class RCOutInput():
         # set default topic for velocity commands
         self._vel_topic = "cmd_vel"
 
-        if rospy_has_param('autopilot/speed_factor_lin_x'):
+        if rospy.has_param('autopilot/speed_factor_lin_x'):
             self._speed_factor_lin_x = rospy.get_param('autopilot/speed_factor_lin_x')
-        if rospy_has_param('autopilot/speed_factor_ang_y'):
+        if rospy.has_param('autopilot/speed_factor_ang_y'):
             self._speed_factor_ang_y = rospy.get_param('autopilot/speed_factor_ang_y')
-        if rospy_has_param('autopilot/vel_topic'):
+        if rospy.has_param('autopilot/vel_topic'):
             self._vel_topic = rospy.get_param('autopilot/vel_topic')
                 
         self.pub_twist = rospy.Publisher(self._vel_topic, Twist, queue_size=1)

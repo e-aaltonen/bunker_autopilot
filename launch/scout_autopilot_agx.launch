@@ -11,7 +11,7 @@
     <param name="autopilot/k_lat" value="111194"/>
     <param name="autopilot/k_long" value="50519"/>
 
-    <param name="autopilot/velocity_topic" value="cmd_vel"/>
+    <param name="autopilot/vel_topic" value="cmd_vel"/>
     <param name="autopilot/rc_topic" value="scout_rc_status"/>
 
     <node pkg="bunker_autopilot" type="rcout_to_cmd_vel.py" name="rcout_to_cmd_vel"/>
