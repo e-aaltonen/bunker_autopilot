@@ -4,6 +4,8 @@ int8 left_x
 int8 left_y
 int8 swa
 int8 swb
+int8 swc
+int8 swd
 int8 var_a
 int8 button
                         
