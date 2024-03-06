@@ -19,11 +19,11 @@ int8 var_a "left knob": CAN frame 0x241, byte[5]:
 range [-100,100]: -100 = left/down limit, 0 = middle, 100 = right/up limit
 
 When a value changes, the node publishes the corresponding new state once in topic /switch/a, /b, /c or /d
-in UInt8 format, 2 = up, 1 = middle, 3 = down, and in topic /switch/var_a, Int8 -100 ... 100
+in UInt8 format, 0 = up, 1 = middle, 2 = down, and in topic /switch/var_a, Int8 -100 ... 100
 
 Requirements:
 - CAN up (sudo ip link set can0 up type can bitrate 500000)
-- bunker_bringup running (bunker_minimal.launch) (modified code)
+- bunker_bringup running (bunker_robot_base.launch) (modified bunker_ros pkg)
 
 """
 
@@ -41,7 +41,13 @@ SW_DOWN = 2
 class SWMessenger():
     def __init__(self):
         rospy.init_node("rc_state_sub_pub")
-        self.sub = rospy.Subscriber("bunker_rc_status", BunkerRCState, self.callback_rc_status)
+        
+        # Default topic when using Bunker
+        self._rc_topic = "bunker_rc_status"
+        if rospy_has_param('autopilot/rc_topic'):
+            self._rc_topic = rospy.get_param('autopilot/rc_topic')
+                    
+        self.sub = rospy.Subscriber(self._rc_topic, BunkerRCState, self.callback_rc_status)
 
         rospy.loginfo("> Subscriber created: RC switches messenger")
 

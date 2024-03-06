@@ -115,7 +115,7 @@ catkin_package(
 )
 
 catkin_install_python(PROGRAMS 
-  src/rc_arm-disarm.py
+  src/rc_arm_disarm.py
   src/rcin_messenger.py
   src/rcout_to_cmd_vel.py
   src/rc_state_messenger.py

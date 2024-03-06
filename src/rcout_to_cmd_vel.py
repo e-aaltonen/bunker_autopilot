@@ -16,9 +16,11 @@ Requirements:
 - bunker_bringup running (bunker_minimal.launch)
 - MAVROS node running (/mavros/mavros_node)
 
-Default parameter values set in /autopilot_test/launch/autopilot_test_agx.launch:
+Default parameter values:
 - autopilot/speed_factor_lin_x: "1.0"   Forward movement rate under FCU control
 - autopilot/speed_factor_ang_y: "1.0"   Turning rate under FCU control
+
+If using bunker_ros, set parameter autopilot/vel_topic with value 'smoother_cmd_vel'
 """
 
 import rospy
@@ -38,13 +40,18 @@ class RCOutInput():
        
         self._speed_factor_lin_x = 1.0
         self._speed_factor_ang_z = 1.0
+        
+        # set default topic for velocity commands
+        self._vel_topic = "cmd_vel"
 
         if rospy_has_param('autopilot/speed_factor_lin_x'):
             self._speed_factor_lin_x = rospy.get_param('autopilot/speed_factor_lin_x')
         if rospy_has_param('autopilot/speed_factor_ang_y'):
             self._speed_factor_ang_y = rospy.get_param('autopilot/speed_factor_ang_y')
+        if rospy_has_param('autopilot/vel_topic'):
+            self._vel_topic = rospy.get_param('autopilot/vel_topic')
                 
-        self.pub_twist = rospy.Publisher("cmd_vel", Twist, queue_size=1)
+        self.pub_twist = rospy.Publisher(self._vel_topic, Twist, queue_size=1)
 
         self.twist_msg = Twist()
 
