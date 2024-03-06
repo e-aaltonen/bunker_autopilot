@@ -42,15 +42,6 @@ class SWMessenger():
     def __init__(self):
         rospy.init_node("rc_state_sub_pub")
         
-        # Default topic when using Bunker
-        self._rc_topic = "bunker_rc_status"
-        if rospy.has_param('autopilot/rc_topic'):
-            self._rc_topic = rospy.get_param('autopilot/rc_topic')
-                    
-        self.sub = rospy.Subscriber(self._rc_topic, BunkerRCState, self.callback_rc_status)
-
-        rospy.loginfo("> Subscriber created: RC switches messenger")
-
         self.pub_swa = rospy.Publisher("autopilot/switch/a", UInt8, queue_size=1)
         self.pub_swb = rospy.Publisher("autopilot/switch/b", UInt8, queue_size=1)
         self.pub_swc = rospy.Publisher("autopilot/switch/c", UInt8, queue_size=1)
@@ -65,6 +56,15 @@ class SWMessenger():
         self.last_swc = 0
         self.last_swd = 0
         self.last_var_a = 0
+
+        # Default topic when using Bunker
+        self._rc_topic = "bunker_rc_status"
+        if rospy.has_param('autopilot/rc_topic'):
+            self._rc_topic = rospy.get_param('autopilot/rc_topic')
+                    
+        self.sub = rospy.Subscriber(self._rc_topic, BunkerRCState, self.callback_rc_status)
+
+        rospy.loginfo("> Subscriber created: RC switches messenger")
         
     def callback_rc_status(self, msg):
         self.channel_msg.right_x = msg.stick_right_h
