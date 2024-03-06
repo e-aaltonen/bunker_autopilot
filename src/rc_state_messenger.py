@@ -71,6 +71,7 @@ class SWMessenger():
         self.channel_msg.right_y = msg.stick_right_v
         self.channel_msg.left_x = msg.stick_left_h
         self.channel_msg.left_y = msg.stick_left_v
+        self.channel_msg.var_a = msg.var_a
 
         # Check if any of the switches have changed and publish in topics autopilot/switch/a, b, c or d
         # Only publish if switch value is 0, 1 or 2 (= eliminate rubbish values during 2-pos. switch transition)
@@ -103,8 +104,8 @@ class SWMessenger():
             
     def sw_to_chan(self, pos):
         chan = 0
-        if pos == 1: chan = 50
-        if pos == 3: chan = 100
+        if pos == SW_MIDDLE: chan = 50
+        if pos == SW_DOWN: chan = 100
         return chan
 
     def run(self):
