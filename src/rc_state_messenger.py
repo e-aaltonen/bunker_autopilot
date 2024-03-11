@@ -4,7 +4,7 @@ rc_state_messenger.py
 E. Aaltonen 2024
 
 Read remote control data feed and publish messages at switch state change
-Also publish stick values [-100,100] and switch values [0,100] in topic /autopilot/RCchannels (for GUI)
+Also publish stick values [-100,100] and switch values [0,100] in topic /autopilot/channels (for GUI)
 
 This node subscribes to /bunker_rc_status (cf. BunkerRCState.msg) published by bunker_messenger.cpp
 (uint8 sws, int8 var_a), cf. Bunker Pro user manual, p. 10:

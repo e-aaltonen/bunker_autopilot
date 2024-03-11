@@ -126,32 +126,33 @@ class WPmanip():
         succ = False
 
         #Update local list
-        self.wp.frame = 3 #  FRAME_GLOBAL_REL_ALT = 3
-        self.wp.command = 16 # NAV_WAYPOINT = 16
-        self.wp.is_current= False
-        self.wp.autocontinue = True
-        self.wp.param1 = 0.0 
-        self.wp.param2 = 0.0
-        self.wp.param3 = 0.0
-        self.wp.param4 = 0.0
-        self.wp.x_lat = self.global_position.latitude
-        self.wp.y_long = self.global_position.longitude
-        self.wp.z_alt = self.global_position.altitude
+        if (self.global_position.latitude > 0.0): # Make sure global position data has been received
+            self.wp.frame = 3 #  FRAME_GLOBAL_REL_ALT = 3
+            self.wp.command = 16 # NAV_WAYPOINT = 16
+            self.wp.is_current= False
+            self.wp.autocontinue = True
+            self.wp.param1 = 0.0 
+            self.wp.param2 = 0.0
+            self.wp.param3 = 0.0
+            self.wp.param4 = 0.0
+            self.wp.x_lat = self.global_position.latitude
+            self.wp.y_long = self.global_position.longitude
+            self.wp.z_alt = self.global_position.altitude
 
-        if use_last:
-            # add current position as last WP
-            self.wps.waypoints.append(self.wp)
-            succ = self.wpPush()
-            return succ
-        if use_current:
-            # add current position at current seq
-            self.wps.waypoints.insert(self.wps.current_seq, self.wp)
-            succ = self.wpPush()
-            return succ
-        if addSeq < len(self.wps.waypoints):
-            # add current position at indicated position (addSeq)
-            self.wps.waypoints.insert(addSeq, self.wp)
-            succ = self.wpPush()
+            if use_last:
+                # add current position as last WP
+                self.wps.waypoints.append(self.wp)
+                succ = self.wpPush()
+                return succ
+            if use_current:
+                # add current position at current seq
+                self.wps.waypoints.insert(self.wps.current_seq, self.wp)
+                succ = self.wpPush()
+                return succ
+            if addSeq < len(self.wps.waypoints):
+                # add current position at indicated position (addSeq)
+                self.wps.waypoints.insert(addSeq, self.wp)
+                succ = self.wpPush()
 
         return succ        
 
