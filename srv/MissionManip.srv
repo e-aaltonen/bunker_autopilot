@@ -11,7 +11,7 @@ int8 MIRROR_MISSION = 7
 int8 task               #   X   X   X   X   X   X   X   X
 bool use_last           #       X   X                       whether to add/remove last waypoint
 bool use_current        #       X   X
-int8 seq                #       X   X           X           if use_last = False, then manipulate WP at [seq]
+uint16 seq              #       X   X           X           if use_last = False, then manipulate WP at [seq]
 bool all_wps            #                       X
 float32 distance        #                       X
 float32 direction_angle #                       X   X   X
@@ -19,4 +19,4 @@ float32 scale_factor    #                           X
 
 ---
 bool success
-int8 number_wps
+uint16 number_wps

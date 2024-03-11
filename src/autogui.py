@@ -6,7 +6,7 @@ import rospy
 import time
 import tkinter as tk
 from tkinter import ttk
-from std_msgs.msg import Int8, UInt8, Float64
+from std_msgs.msg import Int8, UInt8, UInt16, Float64
 from std_msgs.msg import String
 from mavros_msgs.msg import State, Waypoint, WaypointList
 from sensor_msgs.msg import Imu

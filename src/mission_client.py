@@ -27,7 +27,7 @@ Requirements:
 """
 
 import rospy
-from std_msgs.msg import UInt8, Int8, Float32
+from std_msgs.msg import UInt8, Int8, UInt16, Float32
 from bunker_autopilot.srv import MissionManip
 import time
 

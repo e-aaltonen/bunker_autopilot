@@ -16,18 +16,18 @@ the list published in topic /mavros/mission/waypoints is actually correct.
 Function set by the task field:
 
 SET_HOME = 0            ()
-ADD_WP = 1              (bool use_last, bool use_current, int8 seq)
-REMOVE_WP = 2           (bool use_last, bool use_current, int8 seq)
+ADD_WP = 1              (bool use_last, bool use_current, uint16 seq)
+REMOVE_WP = 2           (bool use_last, bool use_current, uint16 seq)
 CLEAR_MISSION = 3       ()
 BACKWARDS_MISSION = 4   ()
-OFFSET_MISSION = 5      (bool all_wps, int8 seq, float32 distance, float32 direction_angle)
+OFFSET_MISSION = 5      (bool all_wps, uint16 seq, float32 distance, float32 direction_angle)
 SCALE_MISSION = 6       (float32 scale_factor)
 ROTATE_MISSION = 7      (float32 direction_angle)
 ***
 
 The node also publishes relevant navigation information in topic /wp_info:
-uint8 total_wps             - total number of waypoints on the list
-uint8 next_wp               - current navigation index
+uint16 total_wps             - total number of waypoints on the list
+uint16 next_wp               - current navigation index
 float32 distance_to_next_wp - distance in metres
 float32 target_bearing      - in degrees, 0 = north
 Distances are calculated using a 2D approximation for short distances
@@ -36,7 +36,7 @@ Distances are calculated using a 2D approximation for short distances
 
 
 import rospy
-from std_msgs.msg import Int8, Float32
+from std_msgs.msg import Int8, UInt16, Float32
 from bunker_autopilot.srv import MissionManip, MissionManipResponse
 from mavros_msgs.msg import Waypoint, WaypointList
 from mavros_msgs.srv import WaypointPush, WaypointPull, WaypointClear
