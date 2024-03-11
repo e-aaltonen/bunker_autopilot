@@ -90,7 +90,7 @@ class WPmanip():
                     try:
                         rospy.wait_for_service('mission_manip')
                         wpService = rospy.ServiceProxy('mission_manip', MissionManip)
-                        serviceSuccess = wpService(task = ADD_WP, use_last = False, use_current = True, seq = 0)
+                        serviceSuccess = wpService(task = ADD_WP, use_last = True, use_current = False, seq = 0)
                     except rospy.ServiceException as e:
                         rospy.loginfo("Service call ADD_WP failed: %s"%e)
 
