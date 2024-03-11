@@ -117,7 +117,9 @@ class WPmanip():
             self.wps.waypoints[0].z_alt = self.global_position.altitude
            
             succ = self.wpPush()
-                
+        # Prompt fail message
+        else:
+            rospy.loginfo("SET_HOME failed - missing global position")        
         return succ
         
     # *** ADD_WP ***
@@ -153,6 +155,9 @@ class WPmanip():
                 # add current position at indicated position (addSeq)
                 self.wps.waypoints.insert(addSeq, self.wp)
                 succ = self.wpPush()
+        # Prompt fail message
+        else:
+            rospy.loginfo("ADD_WP failed - missing global position")
 
         return succ        
 
@@ -177,6 +182,9 @@ class WPmanip():
                 # remove WP at remSeq
                 self.wps.waypoints.pop(remSeq)
                 succ = self.wpPush()
+        # Prompt fail message
+        else:
+            rospy.loginfo("REMOVE_WP failed - waypoints list length: {0}".format(len(self.wps.waypoints)))
         return succ
                           
     # *** CLEAR_MISSION ***
@@ -204,7 +212,9 @@ class WPmanip():
             rospy.loginfo("Waypoint list cleared. Current position set as new home location")
            
             succ = self.wpPush()
-                
+        # Prompt fail message
+        else:
+            rospy.loginfo("CLEAR_MISSION failed - missing global position")      
         return succ
 
     # *** BACKWARDS_MISSION ***
@@ -214,9 +224,12 @@ class WPmanip():
 
         if(len(self.wps.waypoints) > 2):
             self.wps.waypoints[1:] = self.wps.waypoints[len(self.wps.waypoints):0:-1]
+            # Process info
+            rospy.loginfo("BACKWARDS_MISSION: waypoints list inverted")
         
         #Send list to the FCU
         succ = self.wpPush()
+        
         return succ
 
     # *** OFFSET_MISSION ***
@@ -227,6 +240,10 @@ class WPmanip():
         if not all_wps:
             if (len(self.wps.waypoints) > offSeq):
                 self.wps.waypoints[offSeq] = self.offsetWP(self.wps.waypoints[offSeq], distance, direction)
+                succ = self.wpPush()
+            # Prompt fail message
+            else:
+                rospy.loginfo("OFFSET_MISSION failed - waypoints list length: {0} <= offSeq {1}".format(len(self.wps.waypoints), offSeq))
         
         elif (len(self.wps.waypoints) > 1):
             wp_list = WaypointList()
@@ -235,8 +252,12 @@ class WPmanip():
                 wpoff = self.offsetWP(wpoff, distance, direction)
                 wp_list.waypoints.append(wpoff)
             self.wps.waypoints = wp_list.waypoints
+            succ = self.wpPush()
 
-        succ = self.wpPush()
+        # Prompt fail message
+        else:
+            rospy.loginfo("OFFSET_MISSION failed - waypoints list length: {0}".format(len(self.wps.waypoints)))
+
         return succ
         
     def offsetWP(self, wpset, dist, dxion):
@@ -284,7 +305,9 @@ class WPmanip():
                 rospy.loginfo(len(wp_list.waypoints))
             self.wps.waypoints = wp_list.waypoints
             succ = self.wpPush()
-
+        # Prompt fail message
+        else:
+            rospy.loginfo("SCALE_ROTATE_MISSION failed - waypoints list length: {0}".format(len(self.wps.waypoints)))
         return succ
 
     # *** MIRROR_MISSION ***
@@ -322,7 +345,9 @@ class WPmanip():
                 wp_list.waypoints.append(wpoff)
             self.wps.waypoints = wp_list.waypoints
             succ = self.wpPush()
-
+        # Prompt fail message
+        else:
+            rospy.loginfo("MIRROR_MISSION failed - waypoints list length: {0}".format(len(self.wps.waypoints)))
         return succ
 
         
