@@ -1,5 +1,7 @@
 <launch>
     <include file="$(find bunker_autopilot)/launch/bunker_autopilot_agx.launch"/>
+    <include file="$(find velodyne_driver)/launch/nodelet_manager.launch"/>
+    <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch"/>
 
     <param name="autopilot/lidar_topic" value="/velodyne_points"/>
     <param name="autopilot/proximity_topic" value="/autopilot/proximity_points"/>
