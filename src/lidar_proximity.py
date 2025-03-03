@@ -22,7 +22,7 @@ class LidarProx():
         self.slowdown_range_lateral = 0.1 + self.stop_range_lateral # slow down when detecting objects parallel to trajectory closer than this (default: 1.0 + self.path_width_per_side)
         self.stop_range_front = 1.0 + self.robot_front_edge # stop when detecting object directly in front of the robot closer than this (default: 1.0 + self.robot_front_dimension)
         self.slowdown_range_front = 2.5 + self.stop_range_front # slow down when detecting object directly in front of the robot closer than this (default: 3.0 + self.robot_front_dimension)
-        self.max_slope_coefficient = 0.075 # corresponds to an elevation of 15 degrees
+        self.max_slope_coefficient = self.slope_coefficient(15) # corresponds to an elevation of 15 degrees
         self.proximity_speed = 1.0  # cruise speed factor to be published for the autopilot system
         self.proximity_speed_previous = 1.0
 
@@ -56,8 +56,8 @@ class LidarProx():
         if rospy.has_param('autopilot/slowdown_range_front'):
             self.slowdown_range_front = rospy.get_param('autopilot/slowdown_range_front') + self.stop_range_front
         
-        if rospy.has_param('autopilot/max_slope_coefficient'):
-            self.max_slope_coefficient = rospy.get_param('autopilot/max_slope_coefficient')
+        if rospy.has_param('autopilot/max_slope'):
+            self.max_slope_coefficient = self.slope_coefficient(rospy.get_param('autopilot/max_slope'))
 
         if rospy.has_param('autopilot/incoming_rate'):
             self.incoming_rate = rospy.get_param('autopilot/incoming_rate')
@@ -83,6 +83,17 @@ class LidarProx():
         rospy.loginfo("> Publisehr for proximity points: {0}".format(self._lidar_topic))
         self.pub_msg = PointCloud2()
         self.proximity_speed_publisher = rospy.Publisher(self._prox_speed_topic, Float32, queue_size=1)
+
+    def slope_coefficient(self, slope):
+        theta = math.radians(90-slope)
+
+        # Lowest 2 laser rings
+        alpha0 = math.radians(15)
+        alpha1 = math.radians(13)
+        
+        res = (math.tan(theta) * math.sin(alpha0) - math.tan(theta) * math.sin(alpha1)) / (math.tan(theta) * math.sin(alpha1) + 1)
+
+        return res
 
     def slope_ahead(self, max_x_values, min_x_values):
         is_slope = False

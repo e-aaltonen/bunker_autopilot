@@ -15,7 +15,7 @@
     <param name="autopilot/slowdown_range_lateral" value="0.4"/>
     <param name="autopilot/stop_range_front" value="1.5"/>
     <param name="autopilot/slowdown_range_front" value="2.5"/>
-    <param name="autopilot/max_slope_coefficient" value="0.075"/>
+    <param name="autopilot/max_slope" value="15"/>
     <param name="autopilot/incoming_rate" value="1"/>
     <param name="autopilot/rings" value="5"/>
     
