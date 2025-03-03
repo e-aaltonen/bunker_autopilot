@@ -20,3 +20,21 @@ Tasks 1, 2 and 3 can be used with RC switches (activation by flipping SWA down a
 Developed with FlySky i6S (10 channels), using switches SWA (2-pos.), SWB (3-pos.), SWC (3-pos.) and SWD (2-pos.) plus potentiometer VAR_A. The GUI module also supports the rear button (KEY1) and both sticks, totalling 10 channels.
 
 Mar 2024: Change switch position literals in accordance to new RCState messages (bunker_ros_RC & scout_ros_RC).
+
+Mar 2025: New automatic slowdown/stop-and-wait functionality using a Velodyne lidar: When running a mission in AUTO mode and the lidar detects an obstacle in the front or lateral slow-down zone, the rcout_to_cmd_vel node will adjust speed based on proximity messages from the lidar_proximity node. When the obstacle is close enough, in the stop zone, the robot will stop (linear speed in cmd_vel messages set to zero) until the obstacle is removed. The lidar_proximity node can identify a slope of up to approx. 15 degrees, allowing the robot to continue movement. 
+
+Usage: roslaunch bunker_autopilot scout_lidar_proximity.launch (for Scout)
+
+Parameters:
+- autopilot/robot_width: the robot's physical width (m)
+- autopilot/floor_level: the level below the lidar's sight level under which points are ignored (m negative)
+- autopilot/robot_front_edge: distance between the lidar and the robot's front edge (m positive)
+- autopilot/robot_rear_edge: distance between the lidar and the robot's rear edge (m negative)
+- autopilot/stop_range_lateral: the size of stop area on each side of the robot (m positive) - the robot stops if an obstacle is detected in this area
+- autopilot/slowdown_range_lateral: the size of slow-down area on each side of the robot (m positive) - the robot slows down if an obstacle is detected in this area
+- autopilot/stop_range_front: the size of stop area in front of the robot (m positive) - the robot stops if an obstacle is detected in this area
+- autopilot/slowdown_range_front: the size of stop area on each side of the robot (m positive) - the robot slows down if an obstacle is detected in this area
+- autopilot/max_slope_coefficient: the ratio of x distances from the lidar to points detected by subsequent laser rings - smaller number represents steeper slope
+- autopilot/rings: the number of lowermost laser rings used - the remaining rings are simply ignored
+
+  
