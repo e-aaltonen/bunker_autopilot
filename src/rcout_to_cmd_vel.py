@@ -24,7 +24,7 @@ If using bunker_ros, set parameter autopilot/vel_topic with value 'smoother_cmd_
 """
 
 import rospy
-from std_msgs.msg import UInt16
+from std_msgs.msg import UInt16, Float32
 from geometry_msgs.msg import Twist
 from mavros_msgs.msg import RCOut
 import time
@@ -32,14 +32,13 @@ import time
 class RCOutInput():
     def __init__(self):
         rospy.init_node("rcout_to_cmd_vel")
-        self.sub_rc = rospy.Subscriber("mavros/rc/out", RCOut, self.update_throttle)
-        rospy.loginfo("> Subscriber for /mavros/rc/out created")
 
         self._pwm_min = 900
         self._pwm_max = 2100
        
         self._speed_factor_lin_x = 1.0
         self._speed_factor_ang_z = 1.0
+        self._proximity_speed = 1.0
         
         # set default topic for velocity commands
         self._vel_topic = "cmd_vel"
@@ -50,13 +49,22 @@ class RCOutInput():
             self._speed_factor_ang_y = rospy.get_param('autopilot/speed_factor_ang_y')
         if rospy.has_param('autopilot/vel_topic'):
             self._vel_topic = rospy.get_param('autopilot/vel_topic')
-                
+
+        self.sub_rc = rospy.Subscriber("mavros/rc/out", RCOut, self.update_throttle)
+        rospy.loginfo("> Subscriber for /mavros/rc/out created")
+        self.sub_proximity_speed = rospy.Subscriber("autopilot/proximity_speed", Float32, self.update_proximity_speed)
+        rospy.loginfo("> Subscriber for /autopilot/proximity_speed created")
+
         self.pub_twist = rospy.Publisher(self._vel_topic, Twist, queue_size=1)
 
         self.twist_msg = Twist()
+    
+    def update_proximity_speed(self, msg):
+        # Speed limiting data from proximity sensor node, if available
+        self._proximity_speed = msg.data
 
     def update_throttle(self, msg):
-        self.twist_msg.linear.x = self.pwm_to_adimensional((msg.channels[0] + msg.channels[2]) * 0.5) * self._speed_factor_lin_x
+        self.twist_msg.linear.x = self.pwm_to_adimensional((msg.channels[0] + msg.channels[2]) * 0.5) * self._speed_factor_lin_x * self._proximity_speed
         self.twist_msg.angular.z = self.pwm_to_adimensional(msg.channels[2]) - self.pwm_to_adimensional(msg.channels[0]) * self._speed_factor_ang_z
 
     def pwm_to_adimensional(self, pwm):

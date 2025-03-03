@@ -1,0 +1,24 @@
+<launch>
+    <include file="$(find bunker_autopilot)/launch/bunker_autopilot_agx.launch"/>
+
+    <param name="autopilot/lidar_topic" value="/velodyne_points"/>
+    <param name="autopilot/proximity_topic" value="/autopilot/proximity_points"/>
+    <param name="autopilot/proximity_speed_topic" value="/autopilot/proximity_speed"/>
+
+    <param name="autopilot/robot_width" value="0.80"/>
+    <param name="autopilot/floor_level" value="-0.60"/>
+    <param name="autopilot/robot_front_edge" value="0.4"/>
+    <param name="autopilot/robot_rear_edge" value="-0.6"/>
+    <param name="autopilot/stop_range_lateral" value="0.4"/>
+    <param name="autopilot/slowdown_range_lateral" value="0.4"/>
+    <param name="autopilot/stop_range_front" value="1.5"/>
+    <param name="autopilot/slowdown_range_front" value="2.5"/>
+    <param name="autopilot/max_slope_coefficient" value="0.075"/>
+    <param name="autopilot/incoming_rate" value="1"/>
+    <param name="autopilot/rings" value="5"/>
+    
+   <node pkg="bunker_autopilot" type="lidar_proximity.py" name="lidar_proximity" output="screen"/>
+
+</launch>
+
+
