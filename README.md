@@ -21,7 +21,7 @@ Developed with FlySky i6S (10 channels), using switches SWA (2-pos.), SWB (3-pos
 
 Mar 2024: Change switch position literals in accordance to new RCState messages (bunker_ros_RC & scout_ros_RC).
 
-Mar 2025: New automatic slowdown/stop-and-wait functionality using a Velodyne lidar: When running a mission in AUTO mode and the lidar detects an obstacle in the front or lateral slow-down zone, the rcout_to_cmd_vel node will adjust speed based on proximity messages from the lidar_proximity node. When the obstacle is close enough, in the stop zone, the robot will stop (linear speed in cmd_vel messages set to zero) until the obstacle is removed. The lidar_proximity node can identify a slope of up to approx. 15 degrees, allowing the robot to continue movement. 
+Mar 2025: New automatic slowdown/stop-and-wait functionality using a Velodyne lidar: When running a mission in AUTO mode and the lidar detects an obstacle in the front or lateral slow-down zone, the rcout_to_cmd_vel node will adjust speed based on proximity messages from the lidar_proximity node. When the obstacle is close enough, in the stop zone, the robot will stop (linear speed in cmd_vel messages set to zero) until the obstacle is removed. The lidar_proximity node can identify a solid obstacle as a slope (up to a defined angle), allowing the robot to continue movement. 
 
 Usage: roslaunch bunker_autopilot scout_lidar_proximity.launch (for Scout)
 
@@ -34,7 +34,7 @@ Parameters:
 - autopilot/slowdown_range_lateral: the size of slow-down area on each side of the robot (m positive) - the robot slows down if an obstacle is detected in this area
 - autopilot/stop_range_front: the size of stop area in front of the robot (m positive) - the robot stops if an obstacle is detected in this area
 - autopilot/slowdown_range_front: the size of stop area on each side of the robot (m positive) - the robot slows down if an obstacle is detected in this area
-- autopilot/max_slope_coefficient: the ratio of x distances from the lidar to points detected by subsequent laser rings - smaller number represents steeper slope
+- autopilot/max_slope: maximum angle (in degrees) qualified as a slope
 - autopilot/rings: the number of lowermost laser rings used - the remaining rings are simply ignored
 
   
