@@ -79,10 +79,10 @@ class LidarProx():
 
         self.pc2_msg = rospy.Subscriber(self._lidar_topic, PointCloud2, self.parse_pc2)
         rospy.loginfo("> Subscriber for lidar points: {0}".format(self._lidar_topic))
-        self.pc2_msg_publisher = rospy.Publisher("/pub_points", PointCloud2, queue_size=1)
-        rospy.loginfo("> Publisehr for proximity points: {0}".format(self._lidar_topic))
+        self.pc2_msg_publisher = rospy.Publisher("/pub_points,", PointCloud2, queue_size=1)
+        rospy.loginfo("> Publisher for proximity points: {0}".format(self._lidar_topic))
         self.pub_msg = PointCloud2()
-        self.proximity_speed_publisher = rospy.Publisher(self._prox_speed_topic, Float32, queue_size=1)
+        self.proximity_speed_publisher = rospy.Publisher("autopilot/proximity_speed", Float32, queue_size=1)
 
     def slope_coefficient(self, slope):
         theta = math.radians(90-slope)
