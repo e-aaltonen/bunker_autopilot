@@ -133,15 +133,16 @@ class LidarProx():
         if self.incoming_counter >= self.incoming_rate:
             self.incoming_counter = 0
 
-            self.pub_msg.header = msg.header
-            self.pub_msg.height = msg.height
-            #self.pub_msg.width = msg.width
-            self.pub_msg.fields = msg.fields
-            self.pub_msg.is_bigendian = msg.is_bigendian
-            self.pub_msg.point_step = msg.point_step
-            self.pub_msg.row_step = msg.row_step
-            self.pub_msg.is_dense = msg.is_dense
-            self.pub_msg.data = b''
+            if self.publish_debug_pc2:
+                self.pub_msg.header = msg.header
+                self.pub_msg.height = msg.height
+                #self.pub_msg.width = msg.width
+                self.pub_msg.fields = msg.fields
+                self.pub_msg.is_bigendian = msg.is_bigendian
+                self.pub_msg.point_step = msg.point_step
+                self.pub_msg.row_step = msg.row_step
+                self.pub_msg.is_dense = msg.is_dense
+                self.pub_msg.data = b''
 
             scanPoints = int(len(msg.data) / msg.point_step)
             
@@ -194,9 +195,10 @@ class LidarProx():
                                 nearest_object_ahead = min(nearest_object_ahead, object_distance)                       
 
                             # populate message to be published: all points in slow-down zone
-                            for pub_byte_index in range(msg.point_step):
-                                byte_to_add = msg.data[msg.point_step * scanpoint_index + pub_byte_index].to_bytes(1, byteorder='big')
-                                self.pub_msg.data += byte_to_add
+                            if self.publish_debug_pc2:
+                                for pub_byte_index in range(msg.point_step):
+                                    byte_to_add = msg.data[msg.point_step * scanpoint_index + pub_byte_index].to_bytes(1, byteorder='big')
+                                    self.pub_msg.data += byte_to_add
 
                             # is point on trajectory
                             if (abs(float_value_y) < (self.stop_range_lateral) and float_value_x > self.robot_front_edge):
@@ -210,7 +212,8 @@ class LidarProx():
                                 if (float_value_x < self.stop_range_front):
                                     flag_stop = True   
 
-            self.pub_msg.width = int(len(self.pub_msg.data)/self.pub_msg.point_step)
+            if self.publish_debug_pc2:
+                self.pub_msg.width = int(len(self.pub_msg.data)/self.pub_msg.point_step)
 
             flag_slope = self.slope_ahead(max_x_rings, min_x_rings)
 
