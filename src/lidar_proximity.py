@@ -31,6 +31,9 @@ class LidarProx():
         self.incoming_counter = 0
         self.rings = 5 # process n lowermost channels
 
+        # Debug flag for publishing filtered pointcloud2 (points within slowdown zone)
+        self.publish_debug_pc2 = False
+
         # Check params
         if rospy.has_param('autopilot/robot_width'):
             self.path_width_per_side = rospy.get_param('autopilot/robot_width') / 2
@@ -76,6 +79,9 @@ class LidarProx():
         self._proximity_speed_topic = "/autopilot/proximity_speed"
         if rospy.has_param('autopilot/proximity_speed_topic'):
             self._proximity_speed_topic = rospy.get_param('autopilot/proximity_speed_topic')
+
+        if rospy.has_param('autopilot/publish_debug_pc2'):
+            self.publish_debug_pc2 = rospy.get_param('autopilot/publish_debug_pc2')
 
         self.pc2_msg = rospy.Subscriber(self._lidar_topic, PointCloud2, self.parse_pc2)
         rospy.loginfo("> Subscriber for lidar points: {0}".format(self._lidar_topic))
@@ -242,7 +248,8 @@ class LidarProx():
     def run(self):
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
-            self.pc2_msg_publisher.publish(self.pub_msg)
+            if self.publish_debug_pc2:
+                self.pc2_msg_publisher.publish(self.pub_msg)
             rate.sleep()
     
 
