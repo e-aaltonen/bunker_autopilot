@@ -15,8 +15,8 @@
     <param name="autopilot/stop_range_front" value="1.0"/>
     <param name="autopilot/slowdown_range_front" value="2.5"/>
     <param name="autopilot/max_slope" value="15"/>
-    <param name="autopilot/incoming_rate" value="1"/>
-    <param name="autopilot/rings" value="5"/>
+    <param name="autopilot/incoming_rate" value="2"/>
+    <param name="autopilot/rings" value="4"/>
     
    <node pkg="bunker_autopilot" type="lidar_proximity.py" name="lidar_proximity" output="screen"/>
 
